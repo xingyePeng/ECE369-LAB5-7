@@ -1,0 +1,78 @@
+
+// Requirement: 
+// We need a SAD algorithm to locate the the target matrix on frame
+// SAD: Assume that we have two matrix. Matrix A=[1,1,2,3], Matrix B=[1,2,2,1]. We compare the value on same position of each matrix.
+// As we can see, when index=0, Matrix A[0]=1, Matrix B[0]=1, they have the same value, so we increment SAD by 0
+// when index =1, Marix A[1]=1, Matrix B[1]=2, they have different value, so we increment SAD by 1
+// So the total SAD for these two matrix will be 2
+// In this lab, after we comparing to matrix, we are going to move the pivot point diagonally and locate a new matrix,calculate the SAD value
+// The target matrix is the matrix that have the smallest SAD.(minimum difference)
+
+
+
+
+
+// Arguments:
+// asize : dimensions of the frame[i, j] and window[k, l]
+//        i : number of rows, j : number of cols
+//        k : number of rows, l : number of cols
+// frame : frame data with i* j number of pixel values
+// window : search window with k* l number of pixel values
+// current_row: pivot position on Y-axis on frame
+// current_col: pivot position on X-axis on frame
+
+int SAD(int* frame, int* windows, int *asize, int current_row, int current_col) {
+	int i = asize[0];//  rowSize of frame
+	int j = asize[1]; // colSize of frame
+	int k = asize[2]; // rowSize of windows
+	int l = asize[3]; // colSize of windows
+
+	int t0 = 0; // SAD value
+	int t1=0; // index of current position on frame
+	int t2 = 0; // index of current position on windows
+	int t3 = 0; // incrementor
+	int t4 = 0; // store the minimum SAD
+	int* t5; // new address of frame
+	int* t6;  //new address of windows
+
+
+	for (int n = 0; n <= k; n++) {
+		// Windows: iterate col[0...x*] within 1st row (y) [ 0 index]
+		for (int m = 0; m < l; m++) {
+
+
+			// Store current location on frame to t1
+			// Store 2D-Array to 1D-Array: a[i][j]=a[i*rowSize+j]
+			// Here we just want the index
+			t1 = n + current_row;
+			t1 = t1 * i;
+			t1 = t1 + current_col + l;
+
+
+			// Store current location on windows to t2
+			// Store 2D-Array to 1D-Array: a[i][j]=a[i*rowSize+j], such as a[4][4] to a[16]
+			// Here we just want the index
+			t2 = n * k;
+			t2 = t2 + l;
+
+			// t5, t6 store the new address of frame and windows
+			// equals to base address+ target address
+			t5 = frame + t1;
+			t6 = windows + t2;
+			
+			// If the value on same position of windows and frame are the same
+			// t3 increment by 0
+			// Else t3 increment by 1
+			if (*t5 == *t6) {
+				t3 = 0;
+			}
+
+			else
+				t3 = 1;
+			
+			t0 = t0 + t3;
+		}
+	}
+	return t0;
+}
+
